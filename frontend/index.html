@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resume Match</title>
+<link rel="stylesheet" href="style.css?v=6">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#top" aria-label="Resume Match home">
+      <span class="brand-mark" aria-hidden="true">RM</span>
+      <span class="wordmark">Resume Match</span>
+    </a>
+    <span class="tagline">A sharper route from resume to next role</span>
+    <nav class="top-nav" aria-label="Primary navigation"><a href="#top">Home</a><a href="#roadmap-panel">Career guide</a><a href="#search-panel">Jobs</a></nav>
+    <span class="connection-pill" id="connection-status"><span class="status-dot"></span> Checking API</span>
+  </div>
+</header>
+
+<main class="layout" id="top">
+
+<div class="home-view" id="home-view">
+
+  <div class="home-actions"><span>Ready to plan your next move?</span><button id="open-guide-btn">Open career guide <span aria-hidden="true">↗</span></button></div>
+
+  <!-- Step 1: Resume upload -->
+  <section class="panel" id="upload-panel">
+    <div class="section-heading">
+      <div><span class="eyebrow">01 / Profile</span><h2>Upload your resume</h2></div>
+      <span class="step-state" id="resume-state">Waiting for file</span>
+    </div>
+    <div class="dropzone" id="dropzone">
+      <input type="file" id="file-input" accept=".pdf,.docx,.doc" hidden>
+      <div class="upload-icon" aria-hidden="true">↑</div>
+      <strong id="dropzone-text">Drop your resume here</strong>
+      <span>or click to browse PDF, DOCX, or DOC</span>
+    </div>
+    <div id="upload-status" class="status-line"></div>
+    <div id="resume-summary" class="resume-summary hidden">
+      <div class="summary-row">
+        <span class="summary-label">Mode detected</span>
+        <span class="summary-value" id="mode-value">-</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Experience</span>
+        <span class="summary-value" id="years-value">-</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Confidence</span>
+        <span class="summary-value" id="confidence-value">-</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">File</span>
+        <span class="summary-value summary-filename" id="filename-value">-</span>
+      </div>
+      <button id="override-mode-btn" class="link-btn">This looks wrong, let me set it manually</button>
+    </div>
+  </section>
+
+  </div>
+
+  <!-- Career roadmap -->
+  <section class="panel roadmap-panel career-view hidden" id="roadmap-panel">
+    <div class="section-heading">
+      <div><span class="eyebrow">02 / Direction</span><h2>Build toward your next role</h2></div>
+      <span class="step-state" id="roadmap-state">Choose a role</span>
+    </div>
+    <p class="section-note">Turn your current resume into a practical route forward. The checklist is a guide, not a hiring guarantee.</p>
+    <div class="role-search"><label for="target-role-input">What role are you working toward?</label><div class="role-search-row"><input id="target-role-input" list="role-suggestions" value="Data Scientist" placeholder="e.g. Cybersecurity Analyst, Cloud Architect, UX Engineer"><datalist id="role-suggestions"><option>Data Scientist</option><option>Software Developer</option><option>Cybersecurity Analyst</option><option>Cloud Engineer</option><option>DevOps Engineer</option><option>Mobile App Developer</option><option>UX Engineer</option><option>Database Administrator</option><option>QA Automation Engineer</option><option>Research Scientist</option></datalist><button id="set-role-btn">Build my guide</button></div><div class="role-chips" aria-label="Suggested roles"><button data-role-suggestion="Software Developer">Software Developer</button><button data-role-suggestion="Cybersecurity Analyst">Cybersecurity</button><button data-role-suggestion="Cloud Engineer">Cloud</button><button data-role-suggestion="UX Engineer">UX Engineer</button><button data-role-suggestion="DevOps Engineer">DevOps</button></div></div>
+    <div class="roadmap-hero">
+      <div><span class="roadmap-kicker" id="roadmap-kicker">Your target</span><h3 id="roadmap-title">Data Scientist</h3><p id="roadmap-summary"></p></div>
+      <div class="roadmap-progress"><strong id="roadmap-progress-value">0%</strong><span>roadmap complete</span><div class="progress-track"><div id="roadmap-progress-bar"></div></div></div>
+    </div>
+    <div class="roadmap-grid">
+      <article class="roadmap-column"><div class="roadmap-column-head"><span class="mini-icon">⌘</span><h4>Core stack</h4></div><div id="roadmap-stack" class="tag-cloud"></div></article>
+      <article class="roadmap-column"><div class="roadmap-column-head"><span class="mini-icon">↗</span><h4>Proof projects</h4></div><ul id="roadmap-projects" class="roadmap-list"></ul></article>
+      <article class="roadmap-column"><div class="roadmap-column-head"><span class="mini-icon">✓</span><h4>Courses & practice</h4></div><ul id="roadmap-courses" class="roadmap-list"></ul></article>
+    </div>
+    <div class="roadmap-bottom">
+      <div><h4>Make your profile credible</h4><div id="roadmap-checklist" class="checklist"></div></div>
+      <div class="platforms"><h4>Useful places to build proof</h4><div id="roadmap-platforms" class="platform-list"></div></div>
+    </div>
+    <div class="opportunity-tabs" role="tablist">
+      <button class="opportunity-tab active" data-opportunity="internships" role="tab">Internships</button>
+      <button class="opportunity-tab" data-opportunity="remote" role="tab">Remote roles</button>
+      <button class="opportunity-tab" data-opportunity="competitions" role="tab">Events & competitions</button>
+    </div>
+    <div id="opportunity-content" class="opportunity-content"></div>
+    <div class="guide-callout"><strong>Internship strategy</strong><span>Pair one small shipped project with a short case study, then search internships using the same target role in the Jobs section.</span></div>
+  </section>
+
+  <!-- Step 2: Live JD scoring -->
+  <section class="panel" id="score-panel">
+    <div class="section-heading">
+      <div><span class="eyebrow">03 / Fit check</span><h2>Test a job description</h2></div>
+      <span class="step-state">Live score</span>
+    </div>
+    <p class="section-note">Upload a resume first, then paste a description. Your match updates after a short pause.</p>
+    <textarea id="jd-input" placeholder="Paste the job description here. Your score updates as you type." rows="10"></textarea>
+    <div class="input-footer"><span id="jd-counter">0 characters</span><span id="score-status"></span></div>
+    <div id="score-result" class="score-result hidden">
+      <div class="score-headline">
+        <span class="score-number" id="score-number">0</span>
+        <span class="score-outof">/100</span>
+      </div>
+      <div class="score-breakdown">
+        <div class="breakdown-item">
+          <span class="breakdown-label">Semantic fit</span>
+          <div class="bar"><div class="bar-fill" id="semantic-bar"></div></div>
+        </div>
+        <div class="breakdown-item">
+          <span class="breakdown-label">Keyword match</span>
+          <div class="bar"><div class="bar-fill" id="keyword-bar"></div></div>
+        </div>
+      </div>
+      <div class="skills-columns">
+        <div>
+          <h4>Matched skills</h4>
+          <ul id="matched-skills-list" class="skill-list matched"></ul>
+        </div>
+        <div>
+          <h4>Missing skills</h4>
+          <ul id="missing-skills-list" class="skill-list missing"></ul>
+        </div>
+      </div>
+      <div id="suggestions-block">
+        <h4>Suggestions</h4>
+        <ul id="suggestions-list"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 3: Job search -->
+  <section class="panel" id="search-panel">
+    <div class="section-heading">
+      <div><span class="eyebrow">04 / Discovery</span><h2>Find your next role</h2></div>
+      <span class="step-state">Adzuna live search</span>
+    </div>
+    <p class="section-note">Search results are ranked by your resume match when a resume is loaded.</p>
+    <div class="job-type-tabs" role="tablist" aria-label="Job type"><button class="job-type-tab active" data-job-type="all" role="tab">All roles</button><button class="job-type-tab" data-job-type="internship" role="tab">Internships</button><button class="job-type-tab" data-job-type="remote" role="tab">Remote jobs</button><button class="job-type-tab" data-job-type="entry level" role="tab">Entry level</button></div>
+    <div class="search-controls">
+      <input type="text" id="keywords-input" placeholder="Role, e.g. backend developer">
+      <input type="text" id="location-input" placeholder="Location, e.g. Bengaluru or Remote">
+      <input type="number" id="min-salary-input" placeholder="Min salary (LPA)">
+      <button id="search-btn"><span aria-hidden="true">⌕</span> Search jobs</button>
+    </div>
+    <div id="search-status" class="status-line"></div>
+    <div class="results-toolbar hidden" id="results-toolbar">
+      <span id="results-count"></span>
+      <label>Sort <select id="sort-results"><option value="match">Best match</option><option value="fresh">Newest</option><option value="salary">Salary</option></select></label>
+    </div>
+    <div id="results-list" class="results-list"></div>
+  </section>
+
+</main>
+
+<script src="script.js?v=6"></script>
+</body>
+</html>

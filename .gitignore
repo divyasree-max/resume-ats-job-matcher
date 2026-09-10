@@ -1,0 +1,32 @@
+# Java / Maven
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.properties
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.class
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Env files
+.env
+.env.local
+.env.*
+!.env.example
+
+# Database / local runtime
+*.sqlite
+*.db
+
+# Node / frontend caches (if used later)
+node_modules/
+frontend/.cache/
